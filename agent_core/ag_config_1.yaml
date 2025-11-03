@@ -1,0 +1,111 @@
+AGENT_ID: 80001
+SYS_ID: 1
+
+### MavProxy Management ###
+# These params manage the MavProxy inputs and outputs
+# SITL_ADDRESS: '10.0.0.19:14551' # This is the MavProxy output on an external machine
+# SITL_ADDRESS: '10.1.119.44:11101' # This is the MavProxy output on an external machine
+# SITL_ADDRESS: '127.0.0.1:14551' # This is the MavProxy output on an internal machine
+SITL_ADDRESS: 'tcp:127.0.0.1:5760' # This is the MavProxy output on an internal machine
+
+
+# These params manage what output ports will share this agent's info
+MAVPROXY_OUTPUTS:
+  - 11101
+  - 11201
+
+### NETWORK PARAMETERS ###
+
+# HEARTBEAT TO CUBE LOST_COMM SETTINGS
+MAVLINK_LOST_COMM_LIMIT: 1.5  # Time since last heartbeat that the agent.py code shows lost connection with ArduPilot
+
+# ### Manage the C3 nodes
+# NOTE: if one of the GROUP_ID(s) is a subset of the BROADCAST ID
+#       (like GROUP_ID = "group" and BROADCAST id = "group1")
+#       then this C3 node will subscribe to that BROADCAST message 
+C3_NODES:
+  TERMINAL:
+    DIRECT:
+      SOCKET: "tcp://localhost:5555"
+      STATUS_HEARTBEATS:
+        - ARM_STATE: 2
+        - AGENT_POSITION: 1
+    SUBSCRIBE:
+      GROUP_ID:
+        - "group1"
+        - "ALL_SUBSCRIBERS"
+      SOCKET: "tcp://localhost:5556"
+  MISSION_1:
+    DIRECT:
+      SOCKET: "tcp://localhost:5557"
+      STATUS_HEARTBEATS:
+        - ARM_STATE: 2
+        - AGENT_POSITION: 1
+    SUBSCRIBE:
+      GROUP_ID:
+        - "group1"
+      SOCKET: "tcp://localhost:5558"
+
+# ### Managing the status messages and logging of messages between ArduPilot and AgentCore
+#
+# ID = MAVLink Message ID (https://mavlink.io/en/messages/common.html#SYS_STATUS)
+# INTERVAL = The time between messages (in microseconds) requested of ArduPilot to send to AgentCore
+# LOG_INTERVAL = The time between messages logged in the ac_flight_log file
+#                 - A LOG_INTERVAL of -1 means don't log this message
+#                 - A LOG_INTERVAL of 0 means log at the INTERVAL rate
+#                 - ** You can not log at a rate faster than the INTERVAL rate (i.e. faster than ArduPilot sends that message)
+
+# Default MAVLink Message IDs (DO NOT REMOVE THESE ... BUT you can adjust their parameters)
+# These are used to build the agent's AgentStatus object's object variables
+MESSAGE_INTERVALS:
+  HEARTBEAT: # https://mavlink.io/en/messages/common.html#HEARTBEAT        
+    ID: 0
+    INTERVAL: 200000
+    LOG_INTERVAL: 1000000
+  SYS_STATUS: # https://mavlink.io/en/messages/common.html#SYS_STATUS
+    ID: 1
+    INTERVAL: 1000000
+    LOG_INTERVAL: -1
+  GLOBAL_POSITION_INT: # https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT    
+    ID: 33
+    INTERVAL: 500000
+    LOG_INTERVAL: 500000
+
+# Add additional MAVLink Message IDs that you need.  Set the Name, ID, INTERVAL and LOG_INTERVAL
+# These messages are stored within the agent's AgentStatus object's user message dictionary
+USER_MESSAGE_INTERVALS:
+  NAV_CONTROLLER_OUTPUT: # https://mavlink.io/en/messages/common.html#NAV_CONTROLLER_OUTPUT
+    ID: 62
+    INTERVAL: 100000
+    LOG_INTERVAL: -1
+  BATTERY_STATUS: # https://mavlink.io/en/messages/common.html#BATTERY_STATUS
+    ID: 147
+    INTERVAL: 10000000
+    LOG_INTERVAL: -1
+  STATUSTEXT: # https://mavlink.io/en/messages/common.html#STATUSTEXT
+    ID: 253
+    INTERVAL: 10000000
+    LOG_INTERVAL: -1
+
+# Commands
+COMMANDS:
+  "m(v1,v2)":
+    - cmd_sys_mode_change(v1)
+    - arm(v2)
+  "rtl":
+    - "cmd_sys_mode_change(rtl)"
+  "guided":
+    - "cmd_sys_mode_change(guided)"
+  "arm":
+    - "cmd_sys_mode_change(guided)"
+    - "cmd_sys_arm_disarm(arm, True, delay=10)"
+  "launch": "cmd_nav_guided_takeoff(10)"
+  "arm-launch":
+    - "cmd_sys_mode_change(guided)"
+    - "cmd_sys_arm_disarm(arm, True, 15)"
+    - "cmd_nav_guided_takeoff(10)"
+  "land": "cmd_nav_guided_land"
+  "pt3": "cmd_nav_guided_goto_pos_hat(lat=39.017388269, lon=-104.892482145)"
+  "act1": "cmd_nav_guided_goto_pos_hat(lat=39.017412910, lon=-104.894053844)"
+  g2(var1, var2):
+    cmd_nav_guided_reposition_hat(lat=var1, lon=var2)

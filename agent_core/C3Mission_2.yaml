@@ -1,0 +1,26 @@
+C3_ID: 'MISSION_2'
+DIRECT: 5559
+PUBLISH: 5560
+
+SEND_BUFFER_SIZE: 10  # number of messages
+RECEIVE_BUFFER_SIZE: 10 # number of message
+MAX_MSG_AGE: 2  # sec
+
+C3_NODES:
+  TERMINAL:
+    DIRECT:
+      SOCKET: "tcp://localhost:5555"
+    SUBSCRIBE:
+      GROUP_ID:
+        - "msnNodes"
+      SOCKET: "tcp://localhost:5556"
+
+# Commands
+DIRECT_GROUPS:
+  "1":
+    - "80001"
+    - "80002"
+BROADCAST_GROUPS:
+  "1":
+    - "group1"
+COMMANDS:

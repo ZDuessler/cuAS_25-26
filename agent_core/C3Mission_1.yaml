@@ -1,0 +1,155 @@
+C3_ID: 'MISSION_1'
+DIRECT: 5557
+PUBLISH: 5558
+
+SEND_BUFFER_SIZE: 10  # number of messages
+RECEIVE_BUFFER_SIZE: 10 # number of message
+MAX_MSG_AGE: 2  # sec
+
+# C3_NODES:
+#   TERMINAL:
+#     DIRECT:
+#       SOCKET: "tcp://192.168.60.22:5555"
+#       STATUS_HEARTBEATS:
+#         - ARM_STATE: 2
+#         - AGENT_POSITION: 1
+#     SUBSCRIBE:
+#       GROUP_ID:
+#         - "group1"
+#         - "ALL_SUBSCRIBERS"
+#       SOCKET: "tcp://192.168.60.22:5556"
+
+# Commands
+DIRECT_GROUPS:
+  "1":
+    - "80001"
+    - "80002"
+BROADCAST_GROUPS:
+  "1":
+    - "group1"
+COMMANDS:
+  g2(var1, var2):
+    cmd_nav_guided_reposition_hat(lat=var1, lon=var2)
+  m1(var1,var2):
+    - m2(var1)
+    - m3(var2)
+    - cd[80002] cmd_sys_mode_change(var2)
+  m2(var1, v2):
+    - cd[80001] cmd_sys_mode_change(var1)
+    - cd[80001] cmd_sys_arm_disarm(arm, delay=v2)
+  m3(var1):
+    - cd[80001] cmd_sys_mode_change(var1)
+    - cd1 m2(var1)
+  m4(var1):
+    - cd[80001] cmd_sys_mode_change(var1)
+  g: cd[80001] guided
+  r: cd[80001] m(rtl)
+  d(v1, v2): cd[80001] m(v1,v2)
+
+  # msn:
+  #   - cd[80002] msn2
+  #   - cd[80001] msn1
+
+# ------------------------------------------------------------------
+# For demo on 1 Oct 2024
+# Test basic functionalities of drone using a local network with drones
+# Test radar capabilites
+
+  load1:
+    - "cmd_msn_load_waypoints(
+      {wpt_type: Takeoff, alt: 10},
+      {wpt_type: Waypoint, lat: 39.01857694879391, lon: -104.8940839991795, alt: 10},
+      {wpt_type: SplineWaypoint, lat: 39.01839966622315, lon: -104.893992487799, alt: 10},
+      {wpt_type: SplineWaypoint, lat: 39.01828234406904, lon: -104.8937715341129, alt: 10},
+      {wpt_type: SplineWaypoint, lat: 39.01841011995357, lon: -104.8935102550926, alt: 10},
+      {wpt_type: SplineWaypoint, lat: 39.01858911717312, lon: -104.893449982138, alt: 10},
+      {wpt_type: Waypoint, lat: 39.01878000035468, lon: -104.8935512171104, alt: 10},
+      {wpt_type: Waypoint, lat: 39.018782, lon: -104.893970, alt: 10}
+    )"
+
+    # - "cmd_msn_load_waypoints(
+    #   {wpt_type: Takeoff, alt: 10},
+    #   {wpt_type: Waypoint, lat: 39.0186310, lon: -104.8939745, alt: 10},
+    #   {wpt_type: SplineWaypoint, lat: 39.0185554, lon: -104.8939245, alt: 10},
+    #   {wpt_type: SplineWaypoint, lat: 39.0184943, lon: -104.8937627, alt: 10},
+    #   {wpt_type: SplineWaypoint, lat: 39.0185509, lon: -104.8936153, alt: 10},
+    #   {wpt_type: SplineWaypoint, lat: 39.0186231, lon: -104.8935557, alt: 10},
+    #   {wpt_type: Waypoint, lat: 39.0187800, lon: -104.8935512, alt: 10},
+    #   {wpt_type: Waypoint, lat: 39.018782, lon: -104.893970, alt: 10}
+    # )"
+
+
+# ----------------------------------------------------------------------
+
+  # load1:
+  #   - "cmd_msn_load_waypoints(
+  #     {wpt_type: Takeoff, alt: 10},
+  #     {wpt_type: Waypoint, lat: 39.01747058, lon: -104.8924688, alt: 10},
+  #     {wpt_type: SplineWaypoint, lat: 39.01748110, lon: -104.8937634, alt: 30},
+  #     {wpt_type: Waypoint, lat: 39.01815752, lon: -104.8937409, alt: 10}
+  #   )"
+
+  load2:
+    - "cmd_msn_load_waypoints(
+      {wpt_type: Waypoint, lat: 39.01747058, lon: -104.8924688, alt: 10},
+      {wpt_type: SplineWaypoint, lat: 39.01748110, lon: -104.8937634, alt: 30},
+      {wpt_type: Waypoint, lat: 39.01815752, lon: -104.8937409, alt: 10}
+    )"
+
+  # load2:
+  #   - "cmd_msn_load_waypoints(
+  #       {wpt_type: Takeoff, alt: 10},
+  #       {wpt_type: Waypoint, lat: 39.01815752, lon: -104.8937409, alt: 10},
+  #       {wpt_type: SplineWaypoint, lat: 39.01748110, lon: -104.8937634, alt: 30},
+  #       {wpt_type: Waypoint, lat: 39.01747058, lon: -104.8924688, alt: 10}
+  #     )"
+
+  msn:
+    - launch
+    - cmd_sys_mode_change(AUTO)
+    - cmd_nav_guided_set_speed(2)
+    - cmd_sys_arm_disarm(arm, override=True, delay=10)
+    - cmd_msn_start_mission
+
+  launch:
+    - cmd_sys_mode_change(guided)
+    - cmd_sys_arm_disarm(arm, delay=10)
+    - cmd_nav_guided_takeoff(20)
+    - cmd_nav_guided_set_speed(2)
+
+  land:
+    - cmd_nav_guided_land
+
+  land2:
+    - cmd_nav_guided_land
+
+  m:
+    - cd[80001] cmd_nav_guided_slew_br_hat(90, 1000, None, 0, True)
+    - cd[80001] cmd_nav_guided_set_speed(3)
+
+  s(var1):
+    - cb1 cmd_nav_guided_set_speed(var1)
+
+  t1:
+    - cd[80001] launch
+  
+  t2:
+    - cd[80002] launch
+
+  l1:
+    - cd[80001] land
+
+  l2:
+    - cd[80002] land
+
+  t:
+    - cb1 launch
+
+  l:
+    - cb1 land
+
+  e:
+    - exit
+
+  slow:
+    - cmd_nav_guided_set_speed(2)

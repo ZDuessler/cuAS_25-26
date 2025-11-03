@@ -1,0 +1,16 @@
+# ### Start onboard simulations at the designated locations
+# ### from the locations.txt file.
+# ### To start at specific locations, uncomment the locations.
+# ### Note: multiple sims will be at tcp:127.0.0.1:5760/5770/5780 respectively
+# ###       They will be in the locations of the order listed below
+ONBOARD_SIMULATIONS:
+  - 'USAFA_04'
+  - 'USAFA_02'
+  # -  'USAFA_01'
+
+# ### Start the the agents based on the uncommented agent config files
+# ### YOU CAN'T AUTOSTART AGENTS.  LOG IN VIA SSH, CODE_SERVER, or VNC
+# ### AND EXPLICITLY RUN startup_agents.py
+AGENTS:
+  # - 'ag_config_1.yaml'
+  # - 'ag_config_2.yaml'

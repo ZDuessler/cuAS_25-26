@@ -1,0 +1,1 @@
+ffmpeg -s 640x480 -f v4l2 -i /dev/video4 -c:v h264 -r 30 -b:v 500k -an -preset ultrafast -tune zerolatency -pix_fmt rgb24 -f flv rtmp://192.168.60.41:1935/stream
