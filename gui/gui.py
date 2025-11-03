@@ -437,7 +437,7 @@ class MyWindow(Gtk.Window):
         It sends the authorization command by creating the LAUNCH_AUTH.cmd file, 
         which is then picked up by the watchdog observer in udp_sender.py.
         """
-        LAUNCH_FILE_PATH = "./mAIM_interface/LAUNCH_AUTH.cmd"
+        LAUNCH_FILE_PATH = "../mAIM_interface/LAUNCH_AUTH.cmd"
 
         self.update_status("Fire button pressed. Attempting authorization...", is_error=False)
 

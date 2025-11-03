@@ -6,7 +6,7 @@ from watchdog.events import FileSystemEventHandler
 import os # Added import for file path operations
 
 # --- Configuration ---
-RPI_IP = '192.168.1.XXX'  # **CHANGE THIS to your Raspberry Pi's IP address**
+RPI_IP = '192.168.1.2'  # **CHANGE THIS to your Raspberry Pi's IP address**
 PORT = 5005
 FILE_TO_MONITOR = 'data.geojson'
 AUTH_COMMAND_FILE = 'LAUNCH_AUTH.cmd' # NEW: File that grants authorization to send

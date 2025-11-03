@@ -5,7 +5,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 # --- Configuration ---
-RPI_IP = '192.168.1.11'  # **CHANGE THIS to your Raspberry Pi's IP address**
+RPI_IP = '192.168.1.2'  # **CHANGE THIS to your Raspberry Pi's IP address**
 PORT = 5005
 FILE_TO_MONITOR = 'data.geojson'
 MONITORED_DIR = '.'  # Monitor the current directory

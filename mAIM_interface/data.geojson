@@ -13,16 +13,16 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -74.0062119044293,
-          40.712803080906895
+          -74.00604568051325,
+          40.71324185968032
         ]
       },
       "properties": {
         "name": "Test Vehicle 1",
         "status": "Online",
         "speed_kmh": 0,
-        "timestamp": 1761840170.8911083,
-        "update_count": 17
+        "timestamp": 1762192845.2115614,
+        "update_count": 122
       }
     }
   ]
