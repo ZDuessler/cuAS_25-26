@@ -45,16 +45,31 @@ disco_icon = disco_icon.resize((50, 50), Image.Resampling.LANCZOS)  # Resize to 
 
 rogue_icon: Image.Image = Image.open(assets("RogueDrone_Transparent.png")).convert("RGBA")
 rogue_icon = rogue_icon.resize((50, 50), Image.Resampling.LANCZOS)  # Resize to 20x20 pixels
-    
+
+# switch bt althetic fields(0), stadium(1), and stillman (2)
 # Define reference points for the top-left, bottom-left, and top-right corners
-LAT1, LON1 = 39.019045, -104.894301  # Top-left
-LAT3 = 39.017430  # Bottom-left
-LON2 = -104.892113  # Top-right
+# Pre-load base map image
+choose_map = 2
+match choose_map:
+    case 0:
+        LAT1, LON1 = 39.019045, -104.894301  # Top-left athletic field
+        LAT3 = 39.017430  # Bottom-left athletic field
+        LON2 = -104.892113  # Top-right athletic field
+        clean_map_pil: Image.Image = Image.open(assets("FieldMap.png")).convert("RGBA") # Map of the athletic field
+    case 1:
+        LAT1, LON1 = 39.003753, -104.844614  # Top-left stadium
+        LAT3 = 38.990422  # Bottom-left stadium
+        LON2 = -104.816392  # Top-right stadium
+        clean_map_pil: Image.Image = Image.open(assets("StadiumMap.png")).convert("RGBA") # Map of the stadium 
+    case 2:
+        LAT1, LON1 = 39.009991, -104.884566  # Top-left stillman
+        LAT3 = 39.008014  # Bottom-left stillman
+        LON2 = -104.878669  # Top-right stillman
+        clean_map_pil: Image.Image = Image.open(assets("StillmanMap.png")).convert("RGBA") # Map of the stadium 
+
 LAT_RANGE = LAT1 - LAT3
 LON_RANGE = LON2 - LON1
 
-# Pre-load base map image
-clean_map_pil: Image.Image = Image.open(assets("Map.png")).convert("RGBA")
 clean_map_pixbuf = pil2pixbuf(clean_map_pil)
 
 # Used for caching map image between refreshes
@@ -297,7 +312,7 @@ class MyWindow(Gtk.Window):
             ("Clear Map", self.on_clear_map_clicked, "save-button"),
             ("Force Refresh", self.on_reload_data_clicked, "large-button"),
             ("Stop Update", self.stop_update, "large-button"),
-            ("Start Record", self.on_start_flight_button_clicked, "large-button"),
+            ("Start Record", self.on_start_record_button_clicked, "large-button"),
             ("Authorize Fire", self.on_fire_button_clicked, "fire-button")
         ]
 
@@ -401,7 +416,7 @@ class MyWindow(Gtk.Window):
         except Exception as e:
             print(f"Error saving discovery coordinates: {e}")
 
-    def on_start_flight_button_clicked(self, button):
+    def on_start_record_button_clicked(self, button):
         """
         Launches camera streaming script
         """

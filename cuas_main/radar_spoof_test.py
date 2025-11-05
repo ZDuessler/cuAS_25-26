@@ -7,10 +7,22 @@ from math import sin, cos, radians
 # --- Configuration ---
 SOCKET_PATH = "/tmp/ac_bridge"
 
+# switch bt althetic fields(0), stadium(1), and stillman (2)
 # Base coordinates for the simulated area (near the map center)
-BASE_LAT = 39.0182  # Central Latitude
-BASE_LON = -104.8932 # Central Longitude
-RADIUS = 0.0005     # Radius of circular movement in degrees
+choose_map = 0
+match choose_map:
+    case 0:
+        BASE_LAT = 39.0182 # Central Latitude
+        BASE_LON = -104.8932 # Central Longitude
+        RADIUS = 0.0005 # Radius of circular movement in degrees
+    case 1:
+        BASE_LAT = 38.9971 # Central Latitude
+        BASE_LON = -104.8300 # Central Longitude
+        RADIUS = 0.0010 # Radius of circular movement in degrees
+    case 2:
+        BASE_LAT =  # Central Latitude
+        BASE_LON =  # Central Longitude
+        RADIUS = 0.0005 # Radius of circular movement in degrees
 
 # --- Data Generation Function ---
 
@@ -32,8 +44,8 @@ def generate_drone_data(start_time: float, frequency: float) -> tuple:
     disco_lon = BASE_LON + (RADIUS * cos(radians(angle)))
    
     # [Lat, Lon, Alt, Misc_1, Misc_2] - The client expects 5 elements
-    disco_vals = [disco_lat, disco_lon, 100.0, 0.0, 0.0]
-
+    #disco_vals = [disco_lat, disco_lon, 100.0, 0.0, 0.0] #statinoary disco drone to test coordinates 
+    disco_vals = [38.9971, -104.8300, 100.0, 0.0, 0.0]
     # 2. Rogue Drone (A different, slightly offset path)
     # The -90 offset makes it start 90 degrees behind Discovery
     rogue_lat = BASE_LAT + (RADIUS * sin(radians(angle - 90)))
