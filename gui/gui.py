@@ -130,6 +130,33 @@ def plot_point(draw: ImageDraw.ImageDraw, coordinate: Tuple[float, float], color
     pixel_y = int((LAT1 - latitude) / LAT_PER_PIX)
     draw.ellipse((pixel_x - 5, pixel_y - 5, pixel_x + 5, pixel_y + 5), fill=color, outline="black")
 
+def draw_arrow(draw: ImageDraw.ImageDraw, start_point: tuple, end_point: tuple, color: str, width: int = 1):
+    # This is a conceptual function; the actual math is involved.
+    x1, y1 = start_point
+    x2, y2 = end_point
+    
+    # 1. Draw the line (shaft)
+    draw.line((x1, y1, x2, y2), fill=color, width=width)
+    
+    # 2. Calculate the arrowhead points
+    # This involves calculating the angle of the line and using
+    # sine and cosine to find the three points of the triangle.
+
+    # ... Complex geometric calculations here ...
+    
+    # Example placeholder for arrowhead points (a real implementation requires math)
+    arrowhead_size = 10
+    angle = math.atan2(y2 - y1, x2 - x1)
+    
+    # Calculate two points for the base of the triangle
+    p1_x = x2 - arrowhead_size * math.cos(angle - math.pi / 6)
+    p1_y = y2 - arrowhead_size * math.sin(angle - math.pi / 6)
+    p2_x = x2 - arrowhead_size * math.cos(angle + math.pi / 6)
+    p2_y = y2 - arrowhead_size * math.sin(angle + math.pi / 6)
+    
+    # 3. Draw the arrowhead (triangle polygon)
+    draw.polygon([(x2, y2), (p1_x, p1_y), (p2_x, p2_y)], fill=color, outline=color)
+
 def clean_coordinate(value: int | float | str):
     """
     Cleans a coordinate string by ensuring correct decimal placement and preventing unnecessary float rounding.
@@ -523,6 +550,8 @@ class MyWindow(Gtk.Window):
                     # Plot second to most recent coordinates
                     plot_point(draw, rogue_coordinates[-2], "red")
                     plot_point(draw, discovery_coordinates[-2], "green")
+                    # Drawing an arrow test to show predicted path, will need to add if predicted_point...
+                    draw_arrow(draw, (50, 50), (450, 50), "red", width=5, head_length=20, head_width=20)
             else: # On first update (blank map)
                 pil_image = clean_map_pil.copy() # Use clean map image
                 draw = ImageDraw.Draw(pil_image) # Get drawing object
@@ -653,4 +682,5 @@ if __name__ == "__main__":
         client.stop()
         if refresh:
             refresh.cancel()
+
         sys.exit(0)
